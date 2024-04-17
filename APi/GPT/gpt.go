@@ -11,7 +11,7 @@ type requestGPT struct {
 }
 
 func JsonRequest(token_iam, token_folder string) ([]byte, error) {
-	const op = "Api/GPT/request"
+	const op = "./Api/GPT/request"
 	req := requestGPT{Authorization: "Authorization: Bearer " + token_iam, x_folder_id: "x-folder-id: " + token_folder}
 	reqJSON, err := json.Marshal(&req)
 	if err != nil {

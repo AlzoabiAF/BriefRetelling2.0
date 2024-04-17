@@ -1,8 +1,13 @@
 package main
 
-func main() {
-	// TODO: config
+import (
+	"BriefRetelling2.0/config"
+	"fmt"
+)
 
+func main() {
+	cfg := config.MustLoadConfig()
+	fmt.Printf("%#v\n", cfg)
 	// TODO: bot
 
 	// TODO: GPT
