@@ -1,40 +1,46 @@
 package config
 
 import (
+	"github.com/spf13/viper"
+	_ "github.com/spf13/viper"
 	"log"
 	"os"
 	"time"
 )
 
 type Config struct {
-	yandexGPT
-	http_server
-	bot
+	YandexConf
+	Http_server
 }
 
-type yandexGPT struct {
-	iamToken  string `yaml:"iam_token"`
-	gptFolder string `yaml:"GPTfolder"`
+type YandexConf struct {
+	IAMtoken  string
+	GptFolder string
 }
 
-type http_server struct {
-	address     string        `yaml:"address"`
-	timeout     time.Duration `yaml:"timeout"`
-	idleTimeout time.Duration `yaml:"idle_timeout"`
-}
-
-type bot struct {
-	token string `yaml:"token"`
+type Http_server struct {
+	Address      string
+	Timeout      time.Duration
+	Idle_timeout time.Duration
 }
 
 func MustLoadConfig() *Config {
 	const op = "./config"
 	configPath := os.Getenv("CONFIG_PATH")
-	if _, err := os.Stat(configPath); err != nil {
-		log.Fatalf("env file does not exist: %s, %w", op, err)
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		log.Fatalf("env file does not exist: %s", op)
 	}
 
 	var cfg Config
 
+	viper.SetConfigFile("config/config.yaml")
+
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("Dont read config file: %s: %s", op, err)
+	}
+
+	if err := viper.Unmarshal(&cfg); err != nil {
+		log.Fatalf("Dont unmarshal config file: %s: %s", op, err)
+	}
 	return &cfg
 }
