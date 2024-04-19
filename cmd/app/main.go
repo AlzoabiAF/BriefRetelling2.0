@@ -2,12 +2,20 @@ package main
 
 import (
 	"BriefRetelling2.0/config"
-	"fmt"
+	"github.com/joho/godotenv"
+	"log"
 )
 
 func main() {
+
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatalln("not found .env file")
+	}
+
 	cfg := config.MustLoadConfig()
-	fmt.Printf("%#v\n", cfg)
+
+	_ = cfg
+
 	// TODO: bot
 
 	// TODO: GPT
