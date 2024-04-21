@@ -2,7 +2,6 @@ package config
 
 import (
 	"github.com/spf13/viper"
-	_ "github.com/spf13/viper"
 	"log"
 	"os"
 	"time"
@@ -11,6 +10,7 @@ import (
 type Config struct {
 	YandexConf
 	Http_server
+	Bot
 }
 
 type YandexConf struct {
@@ -22,6 +22,10 @@ type Http_server struct {
 	Address      string
 	Timeout      time.Duration
 	Idle_timeout time.Duration
+}
+
+type Bot struct {
+	Token string
 }
 
 func MustLoadConfig() *Config {

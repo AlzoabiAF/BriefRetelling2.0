@@ -16,9 +16,9 @@ func main() {
 
 	_ = cfg
 
-	// TODO: bot
-
 	// TODO: GPT
+
+	// TODO: bot
 
 	// TODO: Run server
 }
