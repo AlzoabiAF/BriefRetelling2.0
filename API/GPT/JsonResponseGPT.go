@@ -26,7 +26,7 @@ type alternative struct {
 	Status   string  `json:"status"`
 }
 
-func jsonUnMarshallRequest(resp []byte) (string, error) {
+func jsonUnmarshallResponse(resp []byte) (string, error) {
 	const op = "./Api/GPT/jsonUnMarshallRequest"
 	r := &responseGPT{}
 	if err := json.Unmarshal(resp, r); err != nil {
