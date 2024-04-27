@@ -12,13 +12,6 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-// const Golang = "Golang"
-// const Cpp = "C++"
-// const Javascript = "JavaScript"
-// const Python = "Python"
-// const Java = "Java"
-// const Csharp = "C#"
-
 var (
 	// Menu texts
 	languageSelection = "<b>Выберите язык программмирования</b>"
@@ -146,10 +139,6 @@ func handleMessage(message *tgbotapi.Message) {
 			msg.ParseMode = tgbotapi.ModeMarkdown
 			_, err = bot.Send(msg)
 		}
-		//msg := tgbotapi.NewMessage(message.Chat.ID, strings.ToUpper(text))
-		//// To preserve markdown, we attach entities (bold, italic..)
-		//msg.Entities = message.Entities
-		//_, err = bot.Send(msg)
 
 	} else {
 		// This is equivalent to forwarding, without the sender's name
