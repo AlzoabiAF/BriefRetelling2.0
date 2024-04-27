@@ -1,9 +1,12 @@
 package main
 
 import (
-	"BriefRetelling2.0/config"
-	"github.com/joho/godotenv"
 	"log"
+
+	"BriefRetelling2.0/tgbot"
+
+	// "BriefRetelling2.0/config"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -12,13 +15,5 @@ func main() {
 		log.Fatalln("not found .env file")
 	}
 
-	cfg := config.MustLoadConfig()
-
-	_ = cfg
-
-	// TODO: GPT
-
-	// TODO: bot
-
-	// TODO: Run server
+	tgbot.Tg()
 }

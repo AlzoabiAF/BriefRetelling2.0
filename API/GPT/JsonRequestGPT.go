@@ -9,7 +9,7 @@ import (
 type requestGPT struct {
 	ModelUri          string            `json:"modelUri"`
 	CompletionOptions completionOptions `json:"completionOptions"`
-	Massages          [2]message        `json:"massages"`
+	Messages          [2]message        `json:"messages"`
 }
 
 type headers struct {
@@ -26,12 +26,12 @@ type completionOptions struct {
 func marshallJsonRequestGPT(userText string) ([]byte, error) {
 	const op = "./API/GPT/marshallJsonRequestGPT"
 	var mes [2]message
-	mes[0] = message{"system", ""}
+	mes[0] = message{"system", "Сегодня ты программист и должен решить проблему из программирования."}
 	mes[1] = message{"user", userText}
 	req := requestGPT{
-		ModelUri:          "gpt://" + os.Getenv("GPT_FOLDER") + "/yandexgpt/latest",
-		CompletionOptions: completionOptions{Stream: false, Temperature: 0.6, MaxTokens: "2000"},
-		Massages:          mes,
+		ModelUri:          modelUri(),
+		CompletionOptions: completionOptions{Stream: false, Temperature: 0.1, MaxTokens: "2000"},
+		Messages:          mes,
 	}
 
 	reqJSON, err := json.Marshal(&req)
@@ -40,4 +40,8 @@ func marshallJsonRequestGPT(userText string) ([]byte, error) {
 	}
 
 	return reqJSON, nil
+}
+
+func modelUri() string {
+	return "gpt://" + os.Getenv("GPT_FOLDER") + "/yandexgpt/latest"
 }

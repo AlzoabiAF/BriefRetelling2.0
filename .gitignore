@@ -2,4 +2,4 @@
 /config/config.yaml
 /go.mod
 /.env
-/tgbot/client/configClient.yaml
+/storage
