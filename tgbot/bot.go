@@ -75,9 +75,15 @@ func Tg() {
 	log.Println("Start listening for updates. Press enter to stop")
 
 	// Wait for a newline symbol, then cancel handling updates
-	bufio.NewReader(os.Stdin).ReadBytes('\n')
-	cancel()
-
+	for {
+		reader, _ := bufio.NewReader(os.Stdin).ReadString('\n')
+		log.Println(reader[:len(reader)-2])
+		if reader[:len(reader)-2] == "stopKey=1234" {
+			log.Println("Stopping the application")
+			cancel()
+			os.Exit(0)
+		}
+	}
 }
 
 func receiveUpdates(ctx context.Context, updates tgbotapi.UpdatesChannel) {
@@ -133,11 +139,15 @@ func handleMessage(message *tgbotapi.Message) {
 			res, err := gpt.GPT(progLanguage, text)
 			progLanguage = ""
 			if err != nil {
-				return
+				log.Printf("ID: %d User: %s %s %s Error: %s\n", user.ID, user.UserName, user.LastName, user.FirstName, err)
 			}
 			msg := tgbotapi.NewMessage(message.Chat.ID, res)
 			msg.ParseMode = tgbotapi.ModeMarkdown
 			_, err = bot.Send(msg)
+			if err != nil {
+				log.Printf("ID: %d User: %s %s %s Error: %s\n", user.ID, user.UserName, user.LastName, user.FirstName, err)
+			}
+			err = sendMenu(message.Chat.ID)
 		}
 
 	} else {
@@ -147,7 +157,7 @@ func handleMessage(message *tgbotapi.Message) {
 	}
 
 	if err != nil {
-		log.Printf("An error occured: %s", err.Error())
+		log.Printf("ID: %d User: %s %s %s Error: %s\n", user.ID, user.UserName, user.LastName, user.FirstName, err)
 	}
 }
 
@@ -183,36 +193,37 @@ func handleButton(query *tgbotapi.CallbackQuery) {
 
 	if query.Data == gpt.Golang {
 		text = generateTextMenuSendingRequest(gpt.Golang)
-		log.Printf("ID: %d User: %s %s %s ProgLang: %s", user.ID, user.UserName, user.LastName, user.FirstName, gpt.Golang)
+		log.Printf("ID: %d User: %s %s %s Button: %s", user.ID, user.UserName, user.LastName, user.FirstName, gpt.Golang)
 		progLanguage = gpt.Golang
 		markup = menuSendingRequest
 	} else if query.Data == gpt.Cpp {
 		text = generateTextMenuSendingRequest(gpt.Cpp)
-		log.Printf("ID: %d User: %s %s %s ProgLang: %s", user.ID, user.UserName, user.LastName, user.FirstName, gpt.Cpp)
+		log.Printf("ID: %d User: %s %s %s Button: %s", user.ID, user.UserName, user.LastName, user.FirstName, gpt.Cpp)
 		progLanguage = gpt.Cpp
 		markup = menuSendingRequest
 	} else if query.Data == gpt.Javascript {
 		text = generateTextMenuSendingRequest(gpt.Javascript)
-		log.Printf("ID: %d User: %s %s %s ProgLang: %s", user.ID, user.UserName, user.LastName, user.FirstName, gpt.Javascript)
+		log.Printf("ID: %d User: %s %s %s Button: %s", user.ID, user.UserName, user.LastName, user.FirstName, gpt.Javascript)
 		progLanguage = gpt.Javascript
 		markup = menuSendingRequest
 	} else if query.Data == gpt.Python {
 		text = generateTextMenuSendingRequest(gpt.Python)
-		log.Printf("ID: %d User: %s %s %s ProgLang: %s", user.ID, user.UserName, user.LastName, user.FirstName, gpt.Python)
+		log.Printf("ID: %d User: %s %s %s Button: %s", user.ID, user.UserName, user.LastName, user.FirstName, gpt.Python)
 		progLanguage = gpt.Python
 		markup = menuSendingRequest
 	} else if query.Data == gpt.Java {
 		text = generateTextMenuSendingRequest(gpt.Java)
-		log.Printf("ID: %d User: %s %s %s ProgLang: %s", user.ID, user.UserName, user.LastName, user.FirstName, gpt.Java)
+		log.Printf("ID: %d User: %s %s %s Button: %s", user.ID, user.UserName, user.LastName, user.FirstName, gpt.Java)
 		progLanguage = gpt.Java
 		markup = menuSendingRequest
 	} else if query.Data == gpt.Csharp {
 		text = generateTextMenuSendingRequest(gpt.Csharp)
-		log.Printf("ID: %d User: %s %s %s ProgLang: %s", user.ID, user.UserName, user.LastName, user.FirstName, gpt.Csharp)
+		log.Printf("ID: %d User: %s %s %s Button: %s", user.ID, user.UserName, user.LastName, user.FirstName, gpt.Csharp)
 		progLanguage = gpt.Csharp
 		markup = menuSendingRequest
 	} else if query.Data == backButton {
 		progLanguage = ""
+		log.Printf("ID: %d User: %s %s %s Button: %s", user.ID, user.UserName, user.LastName, user.FirstName, backButton)
 		text = languageSelection
 		markup = menuSelectionLanguage
 	}
