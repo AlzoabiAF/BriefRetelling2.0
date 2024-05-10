@@ -5,27 +5,6 @@ import (
 	"fmt"
 )
 
-type responseGPT struct {
-	Result result `json:"result"`
-}
-
-type result struct {
-	Alternatives []alternative `json:"alternatives"`
-	Usage        usage         `json:"usage"`
-	ModelVersion string        `json:"modelVersion"`
-}
-
-type usage struct {
-	InputTextTokens  string `json:"inputTextTokens"`
-	CompletionTokens string `json:"completionTokens"`
-	TotalTokens      string `json:"totalTokens"`
-}
-
-type alternative struct {
-	Messages message `json:"message"`
-	Status   string  `json:"status"`
-}
-
 func jsonUnmarshallResponse(resp []byte) (string, error) {
 	const op = "./Api/GPT/jsonUnMarshallResponse"
 	r := &responseGPT{}

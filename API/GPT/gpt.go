@@ -8,18 +8,7 @@ import (
 	"os"
 )
 
-type message struct {
-	Role string `json:"role"`
-	Text string `json:"text"`
-}
-
 // Языки
-const Golang = "Golang"
-const Cpp = "C++"
-const Javascript = "JavaScript"
-const Python = "Python"
-const Java = "Java"
-const Csharp = "C#"
 
 func GPT(programmingLanguage, task string) (string, error) {
 	const op = "./API/GPT/gpt"

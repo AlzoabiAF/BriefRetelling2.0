@@ -6,23 +6,6 @@ import (
 	"os"
 )
 
-type requestGPT struct {
-	ModelUri          string            `json:"modelUri"`
-	CompletionOptions completionOptions `json:"completionOptions"`
-	Messages          [2]message        `json:"messages"`
-}
-
-type headers struct {
-	Content_Type  string `json:"Content-Type"`
-	Authorization string `json:"Authorization"`
-}
-
-type completionOptions struct {
-	Stream      bool    `json:"stream"`
-	Temperature float32 `json:"temperature"`
-	MaxTokens   string  `json:"maxTokens"`
-}
-
 func marshallJsonRequestGPT(userText string) ([]byte, error) {
 	const op = "./API/GPT/marshallJsonRequestGPT"
 	var mes [2]message
