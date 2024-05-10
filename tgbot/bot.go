@@ -5,10 +5,12 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
 	gpt "BriefRetelling2.0/API/GPT"
+	vision "BriefRetelling2.0/API/vision"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -117,7 +119,7 @@ func handleUpdate(update tgbotapi.Update) {
 func handleMessage(message *tgbotapi.Message) {
 	user := message.From
 	text := message.Text
-
+	image := message.Photo
 	if user == nil {
 		return
 	}
@@ -132,26 +134,42 @@ func handleMessage(message *tgbotapi.Message) {
 	var err error
 	if strings.HasPrefix(text, "/") {
 		err = handleCommand(message.Chat.ID, text, user.FirstName)
-	} else if len(text) > 0 {
-		if progLanguage == "" {
-			err = sendMenu(user.ID)
-		} else {
-			res, err := gpt.GPT(progLanguage, text)
-			progLanguage = ""
-			if err != nil {
-				log.Printf("ID: %d User: %s %s %s Error: %s\n", user.ID, user.UserName, user.LastName, user.FirstName, err)
-			}
-			msg := tgbotapi.NewMessage(message.Chat.ID, res)
-			msg.ParseMode = tgbotapi.ModeMarkdown
-			_, err = bot.Send(msg)
-			if err != nil {
-				log.Printf("ID: %d User: %s %s %s Error: %s\n", user.ID, user.UserName, user.LastName, user.FirstName, err)
-			}
-			err = sendMenu(message.Chat.ID)
+	} else if progLanguage == "" {
+		err = sendMenu(user.ID)
+	} else if len(image) > 0 {
+		fileID := image[0].FileID
+		fileConfig := tgbotapi.FileConfig{FileID: fileID}
+		file, err := bot.GetFile(fileConfig)
+
+		fileURL := "https://api.telegram.org/file/bot" + bot.Token + "/" + file.FilePath
+
+		resp, err := http.Get(fileURL)
+		if err != nil {
+			log.Printf("ID: %d User: %s %s %s Error: %s\n", user.ID, user.UserName, user.LastName, user.FirstName, err)
+		}
+		defer resp.Body.Close()
+
+		text, err := vision.Vision(resp.Body)
+		if err != nil {
+			log.Printf("ID: %d User: %s %s %s Error: %s\n", user.ID, user.UserName, user.LastName, user.FirstName, err)
 		}
 
+		sendMessageResultGpt(text, user, message)
+
+	} else if len(text) > 0 {
+		sendMessageResultGpt(text, user, message)
+		err = sendMenu(message.Chat.ID)
 	} else {
 		// This is equivalent to forwarding, without the sender's name
+		// fmt.Println(img[0].FileID)
+		// file, err := os.Create("aa.png")
+		// if err != nil{
+		// 	log.Println(err)
+		// 	return
+		// }
+		// defer file.Close()
+		// _, err = io.Copy(file, bufio.R(img[0].FileID))
+
 		copyMsg := tgbotapi.NewCopyMessage(message.Chat.ID, message.Chat.ID, message.MessageID)
 		_, err = bot.CopyMessage(copyMsg)
 	}
@@ -261,4 +279,22 @@ func checkingNumberOfSymbol(count int) int {
 func initialGreeting(firstName string) string {
 	msg := fmt.Sprintf("<b>Привет, %s. </b>Я предназначен для генерации кода под ваши запросы.\n\nСначала вы выбираете язык программирования, а потом скидываете текст вашей задачи.\n\n<b>Для генерации запроса напишите</b> /menu", firstName)
 	return msg
+}
+
+func sendMessageResultGpt(text string, user *tgbotapi.User, message *tgbotapi.Message) {
+	res, err := gpt.GPT(progLanguage, text)
+	progLanguage = ""
+
+	if err != nil {
+		log.Printf("ID: %d User: %s %s %s Error: %s\n", user.ID, user.UserName, user.LastName, user.FirstName, err)
+	}
+
+	msg := tgbotapi.NewMessage(message.Chat.ID, res)
+	msg.ParseMode = tgbotapi.ModeMarkdown
+	_, err = bot.Send(msg)
+
+	if err != nil {
+		log.Printf("ID: %d User: %s %s %s Error: %s\n", user.ID, user.UserName, user.LastName, user.FirstName, err)
+	}
+
 }
