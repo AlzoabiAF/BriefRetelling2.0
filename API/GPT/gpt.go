@@ -8,8 +8,6 @@ import (
 	"os"
 )
 
-// Языки
-
 func GPT(programmingLanguage, task string) (string, error) {
 	const op = "./API/GPT/gpt"
 	userTextRequest := fmt.Sprintf("Напиши код на %s: %s", programmingLanguage, task)
