@@ -18,11 +18,6 @@ type requestGPT struct {
 	Messages          [2]message        `json:"messages"`
 }
 
-type headers struct {
-	Content_Type  string `json:"Content-Type"`
-	Authorization string `json:"Authorization"`
-}
-
 type completionOptions struct {
 	Stream      bool    `json:"stream"`
 	Temperature float32 `json:"temperature"`
