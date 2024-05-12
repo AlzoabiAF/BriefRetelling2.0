@@ -160,16 +160,6 @@ func handleMessage(message *tgbotapi.Message) {
 		sendMessageResultGpt(text, user, message)
 		err = sendMenu(message.Chat.ID)
 	} else {
-		// This is equivalent to forwarding, without the sender's name
-		// fmt.Println(img[0].FileID)
-		// file, err := os.Create("aa.png")
-		// if err != nil{
-		// 	log.Println(err)
-		// 	return
-		// }
-		// defer file.Close()
-		// _, err = io.Copy(file, bufio.R(img[0].FileID))
-
 		copyMsg := tgbotapi.NewCopyMessage(message.Chat.ID, message.Chat.ID, message.MessageID)
 		_, err = bot.CopyMessage(copyMsg)
 	}
