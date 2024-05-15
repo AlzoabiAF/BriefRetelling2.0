@@ -4,8 +4,6 @@ import (
 	"log"
 
 	"BriefRetelling2.0/tgbot"
-
-	// "BriefRetelling2.0/config"
 	"github.com/joho/godotenv"
 )
 
