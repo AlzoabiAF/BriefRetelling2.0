@@ -26,5 +26,5 @@ func marshallJsonRequestGPT(userText string) ([]byte, error) {
 }
 
 func modelUri() string {
-	return "gpt://" + os.Getenv("GPT_FOLDER") + "/yandexgpt/latest"
+	return "gpt://" + os.Getenv("X_FOLDER_ID") + "/yandexgpt/latest"
 }

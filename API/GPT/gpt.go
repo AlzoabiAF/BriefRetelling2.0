@@ -22,7 +22,7 @@ func GPT(programmingLanguage, task string) (string, error) {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Api-Key "+os.Getenv("IAM_TOKEN"))
+	req.Header.Set("Authorization", "Api-Key "+os.Getenv("IAM_TOKEN_GPT"))
 
 	client := &http.Client{}
 	resq, err := client.Do(req)
